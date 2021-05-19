@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>My first three.js app</title>
+    <style>
+      body { margin: 0; }
+    </style>
+  </head>
+  <body>
+    <script src="three.js"></script>
+    <script src="https://82mou.github.io/threejs/js/OrbitControls.js"></script>
+    <script>
+      const scene = new THREE.Scene();
+      const camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 300 );
+
+      const renderer = new THREE.WebGLRenderer();
+      renderer.setSize( window.innerWidth, window.innerHeight );
+      document.body.appendChild( renderer.domElement );
+
+      var axes = new THREE.AxesHelper( 150 );
+      scene.add(axes);
+
+      camera.position.set( 90, 70, -60 );
+      camera.lookAt( 0, 0, 0 );
+
+      const light = new THREE.AmbientLight( 0x404040 );
+      scene.add(light);
+      scene.background = new THREE.Color( 0xFF8C00 );
+
+      const loader = new THREE.TextureLoader();
+      const geometry1 = new THREE.BoxGeometry(16,16,16);
+      const material1 = new THREE.MeshBasicMaterial( { map: loader.load('chechkers_texture.png')} );
+      const plate1 = new THREE.Mesh( geometry1, material1 );
+      scene.add( plate1 );
+      plate1.position.set(5,20,5)
+
+      function addPlate(i){
+        black = 0x000000
+        white = 0xffffff
+        row = Math.floor(i / 2);
+        column = Math.floor(i % 2);
+        if ((column+row%2)%2==0) {
+          clr=black
+        } else {
+          clr=white
+        }
+        const geometry = new THREE.BoxGeometry(15,3,15);
+        const material = new THREE.MeshBasicMaterial( { color: clr } );
+        const plate = new THREE.Mesh( geometry, material );
+        scene.add( plate );
+        plate.position.set(column*15,0,row*15)
+      }
+
+      // const controls = new THREE.OrbitControls();
+      var controls = new THREE.OrbitControls(camera, renderer.domElement);
+
+      function animate() {
+        requestAnimationFrame( animate );
+        // plate.rotation.y += 0.01;
+        // cube.rotation.y += 0.01;
+        var i = 0;
+        while (i<4){
+          addPlate(i)
+          i++
+        }
+
+        renderer.render( scene, camera );
+      }
+      animate();
+
+
+    </script>
+  </body>
+</html>
