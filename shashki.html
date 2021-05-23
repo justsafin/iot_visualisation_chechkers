@@ -60,7 +60,6 @@
       }
 
       const plate_texture = new THREE.DataTexture( data, width, height, THREE.RGBFormat );
-      const loader = new THREE.TextureLoader();
       const plate_geometry = new THREE.BoxGeometry(32,3,32);
 
       plate_texture.wrapS = THREE.RepeatWrapping;
@@ -118,11 +117,11 @@
 
       var controls = new THREE.OrbitControls(camera, renderer.domElement);
       var i = 0;
-        while (i<64){
-          console.log(i)
-          addChechker(i)
-          i++
-        }
+      while (i<64){
+        console.log(i)
+        addChechker(i)
+        i++
+      }
 
       function animate() {
         requestAnimationFrame( animate );
