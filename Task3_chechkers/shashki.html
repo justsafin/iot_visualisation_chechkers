@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Chechkers</title>
+    <style>
+      body { margin: 0; }
+    </style>
+  </head>
+  <body>
+    <!-- <script src="three.js"></script> -->
+    <script src="http://threejs.org/build/three.min.js"></script>
+    <script src="https://82mou.github.io/threejs/js/OrbitControls.js"></script>
+    <script>
+      const scene = new THREE.Scene();
+      const camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 300 );
+
+      const renderer = new THREE.WebGLRenderer();
+      renderer.setSize( window.innerWidth, window.innerHeight );
+      document.body.appendChild( renderer.domElement );
+
+      camera.position.set( 20, 35, -30 );
+      camera.lookAt( 0, 0, 0 );
+
+      scene.background = new THREE.Color( 0xFF8C00 );
+
+      //creating texture
+      const width = 16;
+      const height = 16;
+      const size = width * height;
+      const data = new Uint8Array( 3 * size );
+      const color = new THREE.Color( 0xff0000 );
+
+      for ( var i = 0; i < size/2; i++) {
+        const stride = i * 3;
+        flag = Math.floor(i / 8)
+        if (flag%2 == 1) {
+          data[ stride ] = 0;
+          data[ stride + 1 ] = 0;
+          data[ stride + 2 ] = 0;
+        } else {
+          data[ stride ] = 255;
+          data[ stride + 1 ] = 255;
+          data[ stride + 2 ] = 255;
+        }
+      }
+
+      for ( var i = size/2; i < size; i++) {
+        const stride = i * 3;
+        flag = Math.floor(i / 8)
+        if (flag%2 == 1) {
+          data[ stride ] = 255;
+          data[ stride + 1 ] = 255;
+          data[ stride + 2 ] = 255;
+        } else {
+          data[ stride ] = 0;
+          data[ stride + 1 ] = 0;
+          data[ stride + 2 ] = 0;
+        }
+      }
+
+      const plate_texture = new THREE.DataTexture( data, width, height, THREE.RGBFormat );
+      const loader = new THREE.TextureLoader();
+      const plate_geometry = new THREE.BoxGeometry(32,3,32);
+
+      plate_texture.wrapS = THREE.RepeatWrapping;
+      plate_texture.wrapT = THREE.RepeatWrapping;
+      const timesToRepeatHorizontally = 4;
+      const timesToRepeatVertically = 4;
+      plate_texture.repeat.set(timesToRepeatHorizontally, timesToRepeatVertically);
+      one_color_material = new THREE.MeshBasicMaterial({
+          color: 0x863200
+      });
+      plate_material = new THREE.MeshBasicMaterial({
+          map: plate_texture
+      });
+
+      // const material1 = new THREE.MeshBasicMaterial( { map: texture} );
+      const plate_materials = [
+      one_color_material,
+      one_color_material,
+      plate_material,
+      one_color_material,
+      one_color_material,
+      one_color_material
+      ];
+      const plate = new THREE.Mesh( plate_geometry, plate_materials );
+      scene.add( plate );
+      plate.position.set(0,0,0)
+
+      function addChechker(i){
+
+        const radiusTop = 1.5;  
+        const radiusBottom = 1.5;  
+        const chechker_height = 1;  
+        const radialSegments = 12;  
+        const chechker_geometry = new THREE.CylinderGeometry(
+        radiusTop, radiusBottom, chechker_height, radialSegments);
+        
+        if (i > 23 && i < 40) {
+          return;
+        }else if (i < 24) {
+          chechker_color = new THREE.MeshBasicMaterial({color: 0x850000});
+        }else if (i > 39) {
+          chechker_color = new THREE.MeshBasicMaterial({color: 0x008200});
+        };       
+        const chechker = new THREE.Mesh( chechker_geometry, chechker_color );        
+        row = Math.floor(i / 8);
+        column = Math.floor(i % 8);
+        flag = ((column+row%2)%2)
+        point_x = -14 + column*4
+        point_z = -14 + row*4
+        if (flag==0) {
+          scene.add( chechker );
+          chechker.position.set(point_x, 2.1, point_z)
+        } 
+      }
+
+      var controls = new THREE.OrbitControls(camera, renderer.domElement);
+      var i = 0;
+        while (i<64){
+          console.log(i)
+          addChechker(i)
+          i++
+        }
+
+      function animate() {
+        requestAnimationFrame( animate );
+        renderer.render( scene, camera );
+      }
+      animate();
+
+    </script>
+  </body>
+</html>
