@@ -16,7 +16,7 @@ def on_connect(client, userdata, flags, rc):
 
 Connected = False  # global variable for the state of the connection
 
-broker_address = "127.0.0.1"
+broker_address = "172.20.0.3"
 port = 1883
 
 client = mqttClient.Client("Python")  # create new instance
